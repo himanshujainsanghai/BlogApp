@@ -2,21 +2,35 @@ import ImageKit from "imagekit";
 import Post from "../models/post.model.js";
 import User from "../models/user.model.js";
 
+// for multiple posts
 export const getPosts = async (req, res) => {
-  const posts = await Post.find();
-  res.status(200).json(posts);
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 2;
+
+  const posts = await Post.find()
+    .populate("user", "username")
+    .limit(limit)
+    .skip((page - 1) * limit);
+
+  const totalPosts = await Post.countDocuments();
+  const hasMore = page * limit < totalPosts;
+  res.status(200).json({ posts, hasMore });
 };
 
+// for a single post
 export const getPost = async (req, res) => {
-  const post = await Post.findOne({ slug: req.params.slug });
+  const post = await Post.findOne({ slug: req.params.slug }).populate(
+    "user",
+    "username img"
+  );
   res.status(200).json(post);
 };
 
 export const createPost = async (req, res) => {
   const { userId } = req.auth;
   const clerkUserId = userId;
-  console.log(req.headers);
-  console.log(clerkUserId);
+  // console.log(req.headers);
+  // console.log(clerkUserId);
 
   if (!clerkUserId) {
     return res.status(401).json("Not authenthicated");

@@ -37,6 +37,7 @@ const Comments = ({ postId }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+      toast("Comment created successfully");
     },
     onError: (error) => {
       toast.error(error.response.data);
@@ -46,6 +47,7 @@ const Comments = ({ postId }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
+    // console.log("FormData  hii :", formData.get("desc"));
 
     const data = {
       desc: formData.get("desc"),
@@ -66,10 +68,14 @@ const Comments = ({ postId }) => {
           placeholder="Write a comment..."
           className="w-full p-4 rounded-xl"
         />
-        <button className="bg-blue-800 px-4 py-3 text-white font-medium rounded-xl">
+        <button
+          type="submit"
+          className="bg-blue-800 px-4 py-3 text-white font-medium rounded-xl"
+        >
           Send
         </button>
       </form>
+
       {isPending ? (
         "Loading..."
       ) : error ? (

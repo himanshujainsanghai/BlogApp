@@ -1,4 +1,4 @@
-import { useAuth, useUser } from "@clerk/clerk-react";
+import { SignIn, useAuth, useUser } from "@clerk/clerk-react";
 import "react-quill-new/dist/quill.snow.css";
 import ReactQuill from "react-quill-new";
 import { useMutation } from "@tanstack/react-query";
@@ -53,7 +53,11 @@ const Write = () => {
   }
 
   if (isLoaded && !isSignedIn) {
-    return <div className="">You should login!</div>;
+    return (
+      <div className="flex items-center justify-center h-[calc(100vh-80px)]">
+        <SignIn signUpUrl="/register" />
+      </div>
+    );
   }
 
   const handleSubmit = (e) => {
